@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 17:56:20 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/01 17:40:07 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/02 13:19:09 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,7 +247,7 @@ void			ft_strmayus(char *str)
 	}
 }
 
-void			basenum(unsigned int num, char *base, char *str)
+void			basenum(unsigned long num, char *base, char *str)
 {
 	if (num >= ft_strlen(base))
 	{
@@ -258,10 +258,10 @@ void			basenum(unsigned int num, char *base, char *str)
 		ft_strfiller(str, base[num]);
 }
 
-int				check_hexsize(int long nbr)
+int				check_hexsize(unsigned long nbr)
 {
-	int		size;
-	int		num;
+	int					size;
+	unsigned long		num;
 
 	num = nbr;
 	size = 0;
@@ -273,13 +273,11 @@ int				check_hexsize(int long nbr)
 	return (size + 1);
 }
 
-char			*ft_tohex(int long nbr)
+char			*ft_tohex(unsigned long nbr)
 {
-	int			i;
 	char		*base;
 	char		*str;
 
-	i = 0;
 	base = "0123456789abcdef";
 	str = ft_calloc(check_hexsize(nbr) + 1, 1);
 	basenum(nbr, base, str);

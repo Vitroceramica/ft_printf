@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 13:30:44 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/01 17:49:52 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/02 17:55:20 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../includes/ft_printf_utils.h"
 #include <stdio.h>
 
-char	*find_por(char *text) //Devuelve el puntero al primer caracter tras el primer % que se encuentre en texto
+void	*find_por(char *text) //Devuelve el puntero al primer caracter tras el primer % que se encuentre en texto
 {
 	char *aux;
 
@@ -143,9 +143,23 @@ char	*allchar(char *arg) //devuelve un string ("arg\0")
 	return (str);
 }
 
-/*char	*allpointer(unsigned long arg)			//Hacer una transformacion de unsigned long a hexadecimal y meterlo en un string con
-												//0x delante
-*/
+char	*allpointer(char *text, unsigned long arg) //Hace una transformacion de unsigned long a hexadecimal y lo mete en un string
+{
+	char	*str;
+	char	*base;
+
+	str = NULL;
+	if (find_type(text) == 'p')
+	{
+		str = ft_calloc(check_hexsize(arg) + 3, 1);
+		ft_strfiller(str, '0');
+		ft_strfiller(str, 'x');
+		base = "0123456789abcdef";
+		basenum(arg, base, str);
+	}
+	return (str);
+}
+
 char	*allint(char *text, int arg) //encuentra 'd','i','u','x' y 'X' en text y devuelve un string ("arg\0")
 {
 	char *str;
@@ -191,6 +205,8 @@ void	print_arg(char *text, char *arg, int spaces) //imprime el argumento con el 
 	c = ' ';
 	num = spaces;
 	aux = text;
+	if (!arg)
+		arg = "(null)\0";
 	if (num >= 0)
 	{
 		if (find_this_flag(text, '0'))
@@ -221,6 +237,8 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	type = find_type(text);
 	c = ' ';
 	cut_num = cut_num - ft_strlen(arg);
+	if (cut_num <= 0)
+		cut_num = 0;
 	if (num_spaces >= 0)
 	{
 		num_spaces = num_spaces - cut_num;
@@ -235,7 +253,7 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	}
 	while (num_spaces > 0)
 	{
-		if (find_this_flag(text, '0'))
+		if (find_this_flag(text, '0'))			//Evitar que cuente como flag encontrada el 0 que hay tras el punto
 			c = '0';
 		ft_putchar(c);
 		num_spaces--;
@@ -248,7 +266,8 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 			ft_putchar('0');
 			cut_num--;
 		}
-		ft_putstr(arg);
+		if (cut_num != 0)
+			ft_putstr(arg);
 	}
 	if (type == 's' || type == 'p')
 	{
@@ -302,14 +321,16 @@ int		ft_printf(const char *head, ...)
 			if (type == 'd' || type == 'i' || type == 'u'
 			|| type == 'x' || type == 'X')
 				arg = allint(text, va_arg(args, int));
-			//if (type == 'p')									//Falta el tipo 'p'
-				//arg = allpointer(text, va_arg(args, unsigned long));
+			if (type == 'p')
+				arg = allpointer(text, va_arg(args, unsigned long));
 			if (type == 's')
 				arg = allchar(va_arg(args, char *));
 			if (type == 'c')
 				arg = justchar(va_arg(args, int));
 			if (type == '%')
-				ft_putchar('%');
+			{
+				arg = justchar(*text);
+			}
 			if (find_this_flag(text, '*') == 1)
 			{
 				if (find_this_flag(text, '.'))
@@ -328,7 +349,9 @@ int		ft_printf(const char *head, ...)
 					print_arg(text, arg, num_spaces(text, arg));
 			}
 		}
-		while (find_type(text))
+		while (*text != type && *text)
+			text++;
+		if (*text)
 			text++;
 	}
 	return (0);

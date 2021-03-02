@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 18:00:54 by antonmar          #+#    #+#             */
-/*   Updated: 2021/02/17 12:32:02 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/02 13:20:33 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 # define PRINTF_UTILS_H
 
 int					ft_sizeofnum(int n);
-int					check_hexsize(unsigned int nbr);
+int					check_hexsize(unsigned long nbr);
+void				basenum(unsigned long num, char *base, char *str);
 void				ft_strmayus(char *str);
 void				ft_strfiller(char *str, char c);
 char				*ft_strdup(const char *string);
@@ -35,6 +36,6 @@ char				*ft_strrchr(const char *str, int c);
 char				*ft_itoa(int n);
 char				*ft_unsigned_itoa(unsigned int n);
 char				ft_toupper(char c);
-char				*ft_tohex(unsigned int nbr);
+char				*ft_tohex(unsigned long nbr);
 
 #endif
