@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 13:30:44 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/02 17:55:20 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/03 16:57:44 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,35 +23,6 @@ void	*find_por(char *text) //Devuelve el puntero al primer caracter tras el prim
 		aux++;
 	aux++;
 	return (aux);
-}
-
-int		num_spaces(char *text, char *arg) //Devuelve el numero de espacios a imprimer en el primer %, el negativo implica espacios a la derecha
-{
-	char	*aux;
-	char	prior;
-	int		num;
-
-	aux = text;
-	num = 0;
-	prior = 0;
-	while ((find_flag(aux) != 0 && find_flag(aux) != '.')
-	|| (*aux >= 48 && *aux <= 57))
-	{
-		if (*aux == 45)
-			prior = 1;
-		aux++;
-	}
-	aux--;
-	while (*aux >= 48 && *aux <= 57 && *aux)
-		aux--;
-	aux++;
-	num = num + ft_atoi(aux);
-	num = num - ft_strlen(arg);
-	if (num < 0)
-		num = 0;
-	if (prior == 1)
-		num *= -1;
-	return (num);
 }
 
 int		num_cut(char *text) //Devuelve el numero de caracteres a imprimir en el flag .
@@ -95,15 +66,50 @@ char	find_flag(char *text) //Devuelve la primera flag que encuentra desde el pun
 int		find_this_flag(char *text, char flag) //Devuelve 1 si encuentra la flag o 0 si no
 {
 	char	*aux;
+	char type;
 
+	type = find_type(text);
 	aux = text;
 	while (find_flag(aux) || (*aux >= 48 && *aux < 58))
 	{
+		if (flag == '0' && find_flag(aux) == '.')
+			return (0);
 		if (find_flag(aux) == flag)
 			return (1);
 		aux++;
 	}
 	return (0);
+}
+
+int		num_spaces(char *text, char *arg) //Devuelve el numero de espacios a imprimer en el primer %, el negativo implica espacios a la derecha
+{
+	char	*aux;
+	char	prior;
+	int		num;
+
+	aux = text;
+	num = 0;
+	prior = 0;
+	while ((find_flag(aux) != 0 && find_flag(aux) != '.')
+	|| (*aux >= 48 && *aux <= 57))
+	{
+		if (*aux == 45)
+			prior = 1;
+		aux++;
+	}
+	aux--;
+	while (*aux >= 48 && *aux <= 57 && *aux)
+		aux--;
+	aux++;
+	num = num + ft_atoi(aux);
+	num = num - ft_strlen(arg);
+	if (find_this_flag(aux, '.') == 1 && num_cut(aux) == 0)
+		num = num + ft_strlen(arg);
+	if (num < 0)
+		num = 0;
+	if (prior == 1)
+		num *= -1;
+	return (num);
 }
 
 char	find_type(char *text) //Devuelve el primer tipo encontrado saltando las flags
@@ -141,6 +147,19 @@ char	*allchar(char *arg) //devuelve un string ("arg\0")
 		return (arg);
 	str = ft_strdup(arg);
 	return (str);
+}
+
+char	first_flag(char *text)
+{
+	while (*text)
+	{
+		if (*text == '*')
+			return ('*');
+		if (*text == '.')
+			return ('.');
+		text++;
+	}
+	return (0);
 }
 
 char	*allpointer(char *text, unsigned long arg) //Hace una transformacion de unsigned long a hexadecimal y lo mete en un string
@@ -232,20 +251,35 @@ void	print_arg(char *text, char *arg, int spaces) //imprime el argumento con el 
 void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime el numero de carácteres y espacios seleccionados de arg
 {
 	char	type;
+	char	nowrite;
 	char	c;
 
 	type = find_type(text);
+	nowrite = 0;
 	c = ' ';
-	cut_num = cut_num - ft_strlen(arg);
-	if (cut_num <= 0)
-		cut_num = 0;
-	if (num_spaces >= 0)
+	if (cut_num == 0)
+	{
+		nowrite = '\0';
+		if (num_spaces >= 0)
+		{
+			num_spaces = num_spaces - ft_strlen(arg);
+			if (num_spaces < 0)
+				num_spaces = 0;
+		}
+			if (num_spaces < 0)
+		{
+			num_spaces = num_spaces + ft_strlen(arg);
+			if (num_spaces > 0)
+				num_spaces = 0;
+		}
+	}
+	if (num_spaces >= 0 && type != 's' && type != 'p')
 	{
 		num_spaces = num_spaces - cut_num;
 		if (num_spaces < 0)
 			num_spaces = 0;
 	}
-	else
+	if (num_spaces < 0 && type != 's' && type != 'p')
 	{
 		num_spaces = num_spaces + cut_num;
 		if (num_spaces > 0)
@@ -253,7 +287,7 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	}
 	while (num_spaces > 0)
 	{
-		if (find_this_flag(text, '0'))			//Evitar que cuente como flag encontrada el 0 que hay tras el punto
+		if (find_this_flag(text, '0') && nowrite != '\0')
 			c = '0';
 		ft_putchar(c);
 		num_spaces--;
@@ -261,13 +295,14 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	if (type == 'd' || type == 'i' || type == 'u'
 	|| type == 'x' || type == 'X')
 	{
+		if (*arg == '0')
+			arg = "\0";
 		while (cut_num > 0)
 		{
 			ft_putchar('0');
 			cut_num--;
 		}
-		if (cut_num != 0)
-			ft_putstr(arg);
+		ft_putstr(arg);
 	}
 	if (type == 's' || type == 'p')
 	{
@@ -334,7 +369,12 @@ int		ft_printf(const char *head, ...)
 			if (find_this_flag(text, '*') == 1)
 			{
 				if (find_this_flag(text, '.'))
-					print_point(text, arg, num_s, num_spaces(text, arg));
+				{
+					if (first_flag(text) == '.')
+						print_point(text, arg, num_s, num_spaces(text, arg));
+					else
+						print_point(text, arg, num_cut(text), num_s + ft_strlen(arg));
+				}
 				else
 				{
 					print_arg(text, arg, num_s - ft_strlen(arg));
