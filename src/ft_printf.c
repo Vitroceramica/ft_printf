@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 13:30:44 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/03 16:57:44 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/05 18:07:34 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int		find_this_flag(char *text, char flag) //Devuelve 1 si encuentra la flag o 0
 	return (0);
 }
 
-int		num_spaces(char *text, char *arg) //Devuelve el numero de espacios a imprimer en el primer %, el negativo implica espacios a la derecha
+int		num_spaces(char *text) //Devuelve el numero de espacios a imprimer en el primer %, el negativo implica espacios a la derecha
 {
 	char	*aux;
 	char	prior;
@@ -102,11 +102,6 @@ int		num_spaces(char *text, char *arg) //Devuelve el numero de espacios a imprim
 		aux--;
 	aux++;
 	num = num + ft_atoi(aux);
-	num = num - ft_strlen(arg);
-	if (find_this_flag(aux, '.') == 1 && num_cut(aux) == 0)
-		num = num + ft_strlen(arg);
-	if (num < 0)
-		num = 0;
 	if (prior == 1)
 		num *= -1;
 	return (num);
@@ -160,6 +155,23 @@ char	first_flag(char *text)
 		text++;
 	}
 	return (0);
+}
+
+int		real_spaces	(int num_spaces, int adjust)
+{
+	if (num_spaces >= 0)
+		{
+			num_spaces = num_spaces - adjust;
+			if (num_spaces < 0)
+				num_spaces = 0;
+		}
+			if (num_spaces < 0)
+		{
+			num_spaces = num_spaces + adjust;
+			if (num_spaces > 0)
+				num_spaces = 0;
+		}
+	return (num_spaces);
 }
 
 char	*allpointer(char *text, unsigned long arg) //Hace una transformacion de unsigned long a hexadecimal y lo mete en un string
@@ -260,31 +272,12 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	if (cut_num == 0)
 	{
 		nowrite = '\0';
-		if (num_spaces >= 0)
-		{
-			num_spaces = num_spaces - ft_strlen(arg);
-			if (num_spaces < 0)
-				num_spaces = 0;
-		}
-			if (num_spaces < 0)
-		{
-			num_spaces = num_spaces + ft_strlen(arg);
-			if (num_spaces > 0)
-				num_spaces = 0;
-		}
+		num_spaces = real_spaces(num_spaces, ft_strlen(arg));
 	}
-	if (num_spaces >= 0 && type != 's' && type != 'p')
-	{
-		num_spaces = num_spaces - cut_num;
-		if (num_spaces < 0)
-			num_spaces = 0;
-	}
-	if (num_spaces < 0 && type != 's' && type != 'p')
-	{
-		num_spaces = num_spaces + cut_num;
-		if (num_spaces > 0)
-			num_spaces = 0;
-	}
+	else if (cut_num < num_spaces)
+		num_spaces = real_spaces(num_spaces, cut_num);
+	else
+		num_spaces = real_spaces(num_spaces, ft_strlen(arg));
 	while (num_spaces > 0)
 	{
 		if (find_this_flag(text, '0') && nowrite != '\0')
@@ -297,6 +290,7 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	{
 		if (*arg == '0')
 			arg = "\0";
+		cut_num = cut_num - ft_strlen(arg);
 		while (cut_num > 0)
 		{
 			ft_putchar('0');
@@ -363,30 +357,28 @@ int		ft_printf(const char *head, ...)
 			if (type == 'c')
 				arg = justchar(va_arg(args, int));
 			if (type == '%')
-			{
-				arg = justchar(*text);
-			}
+				arg = justchar('%');
 			if (find_this_flag(text, '*') == 1)
 			{
 				if (find_this_flag(text, '.'))
 				{
 					if (first_flag(text) == '.')
-						print_point(text, arg, num_s, num_spaces(text, arg));
+						print_point(text, arg, num_s, num_spaces(text));
 					else
 						print_point(text, arg, num_cut(text), num_s + ft_strlen(arg));
 				}
 				else
 				{
-					print_arg(text, arg, num_s - ft_strlen(arg));
+					print_arg(text, arg, real_spaces(num_s, ft_strlen(arg)));
 				}
 			}
 			else
 			{
 				if (find_this_flag(text, '.'))
 					print_point(text, arg, num_cut(text),
-					num_spaces(text, arg));
+					num_spaces(text));
 				else
-					print_arg(text, arg, num_spaces(text, arg));
+					print_arg(text, arg, real_spaces(num_spaces(text), ft_strlen(arg)));
 			}
 		}
 		while (*text != type && *text)
