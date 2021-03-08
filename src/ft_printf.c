@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 13:30:44 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/05 18:07:34 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/08 19:19:37 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,15 @@ void	print_arg(char *text, char *arg, int spaces) //imprime el argumento con el 
 	num = spaces;
 	aux = text;
 	if (!arg)
+	{
 		arg = "(null)\0";
+		num = real_spaces(num, 6);
+	}
+	/*if (ft_atoi(arg) < 0)
+		{
+			ft_putchar('-');
+			arg++;
+		}*/
 	if (num >= 0)
 	{
 		if (find_this_flag(text, '0'))
@@ -269,12 +277,13 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	type = find_type(text);
 	nowrite = 0;
 	c = ' ';
+	if (!arg)
+		arg = "(null)\0";
+	if (cut_num < 0)
+		cut_num = ft_strlen(arg);
 	if (cut_num == 0)
-	{
 		nowrite = '\0';
-		num_spaces = real_spaces(num_spaces, ft_strlen(arg));
-	}
-	else if (cut_num < num_spaces)
+	else if ((unsigned int)cut_num < ft_strlen(arg))
 		num_spaces = real_spaces(num_spaces, cut_num);
 	else
 		num_spaces = real_spaces(num_spaces, ft_strlen(arg));
@@ -290,6 +299,11 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	{
 		if (*arg == '0')
 			arg = "\0";
+		if (ft_atoi(arg) < 0)
+		{
+			ft_putchar('-');
+			arg++;
+		}
 		cut_num = cut_num - ft_strlen(arg);
 		while (cut_num > 0)
 		{

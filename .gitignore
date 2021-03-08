@@ -2,4 +2,5 @@
 **/*.out
 .vscode
 **/debug*.*
-main.c
+main.cpft/
+pft
