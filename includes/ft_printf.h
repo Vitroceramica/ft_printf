@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 12:15:53 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/05 17:15:30 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/09 18:22:39 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # define PRINTF_H
 
 int		ft_printf(const char *head, ...);
-void	print_arg(char *text, char *arg, int spaces);
-void	print_point(char *text, char *arg, int cut_num, int num_spaces);
+int		print_arg(char *text, char *arg, int spaces);
+int		print_point(char *text, char *arg, int cut_num, int num_spaces);
 char	*por(char *text);
 char	*justchar(char c);
 char	*allchar(char *arg);

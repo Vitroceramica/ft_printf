@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 13:30:44 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/08 19:19:37 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/09 19:21:21 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,17 +160,17 @@ char	first_flag(char *text)
 int		real_spaces	(int num_spaces, int adjust)
 {
 	if (num_spaces >= 0)
-		{
-			num_spaces = num_spaces - adjust;
-			if (num_spaces < 0)
-				num_spaces = 0;
-		}
-			if (num_spaces < 0)
-		{
-			num_spaces = num_spaces + adjust;
-			if (num_spaces > 0)
-				num_spaces = 0;
-		}
+	{
+		num_spaces = num_spaces - adjust;
+		if (num_spaces < 0)
+			num_spaces = 0;
+	}
+	if (num_spaces < 0)
+	{
+		num_spaces = num_spaces + adjust;
+		if (num_spaces > 0)
+			num_spaces = 0;
+	}
 	return (num_spaces);
 }
 
@@ -227,25 +227,28 @@ int		num_ast(char *text)
 	return (amount);
 }
 
-void	print_arg(char *text, char *arg, int spaces) //imprime el argumento con el numero de espacios o 0s correspondiente
+int		print_arg(char *text, char *arg, int spaces) //imprime el argumento con el numero de espacios o 0s correspondiente
 {
 	char	c;
 	int		num;
+	int		num_char;
 	char	*aux;
 
 	c = ' ';
 	num = spaces;
+	num_char = 0;
 	aux = text;
 	if (!arg)
 	{
 		arg = "(null)\0";
 		num = real_spaces(num, 6);
 	}
-	/*if (ft_atoi(arg) < 0)
-		{
-			ft_putchar('-');
-			arg++;
-		}*/
+	if (ft_atoi(arg) < 0 && find_this_flag(text, '0'))
+	{
+		ft_putchar('-');
+		num_char++;
+		arg++;
+	}
 	if (num >= 0)
 	{
 		if (find_this_flag(text, '0'))
@@ -253,45 +256,72 @@ void	print_arg(char *text, char *arg, int spaces) //imprime el argumento con el 
 		while (num > 0)
 		{
 			ft_putchar(c);
+			num_char++;
 			num--;
 		}
+		num_char += ft_strlen(arg);
 		ft_putstr(arg);
+
 	}
 	if (num < 0)
 	{
+		num_char += ft_strlen(arg);
 		ft_putstr(arg);
 		while (num < 0)
 		{
 			ft_putchar(c);
+			num_char++;
 			num++;
 		}
 	}
+	return (num_char);
 }
 
-void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime el numero de carácteres y espacios seleccionados de arg
+int		print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime el numero de carácteres y espacios seleccionados de arg
 {
 	char	type;
 	char	nowrite;
+	int		num_char;
 	char	c;
 
 	type = find_type(text);
+	num_char = 0;
 	nowrite = 0;
 	c = ' ';
 	if (!arg)
 		arg = "(null)\0";
 	if (cut_num < 0)
+	{
 		cut_num = ft_strlen(arg);
+		if (ft_atoi(arg) < 0)
+			cut_num--;
+	}
 	if (cut_num == 0)
 		nowrite = '\0';
-	else if ((unsigned int)cut_num < ft_strlen(arg))
-		num_spaces = real_spaces(num_spaces, cut_num);
-	else
-		num_spaces = real_spaces(num_spaces, ft_strlen(arg));
+	if (type == 's' || type == 'p')
+	{
+		if ((unsigned int)cut_num < ft_strlen(arg))
+			num_spaces = real_spaces(num_spaces, cut_num);
+		else
+			num_spaces = real_spaces(num_spaces, ft_strlen(arg));
+	}
+	else if (cut_num != 0)
+	{
+		if ((unsigned int)cut_num < ft_strlen(arg))
+			num_spaces = real_spaces(num_spaces, ft_strlen(arg));
+		else
+		{
+			if (ft_atoi(arg) < 0)
+				num_spaces = real_spaces(num_spaces, 1);
+			num_spaces = real_spaces(num_spaces, cut_num);
+		}
+	}
 	while (num_spaces > 0)
 	{
 		if (find_this_flag(text, '0') && nowrite != '\0')
 			c = '0';
 		ft_putchar(c);
+		num_char++;
 		num_spaces--;
 	}
 	if (type == 'd' || type == 'i' || type == 'u'
@@ -302,30 +332,40 @@ void	print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 		if (ft_atoi(arg) < 0)
 		{
 			ft_putchar('-');
+			num_char++;
 			arg++;
 		}
 		cut_num = cut_num - ft_strlen(arg);
 		while (cut_num > 0)
 		{
 			ft_putchar('0');
+			num_char++;
 			cut_num--;
 		}
+		num_char += ft_strlen(arg);
 		ft_putstr(arg);
 	}
-	if (type == 's' || type == 'p')
+	if (type == 's')
 	{
 		while (cut_num > 0 && *arg)
 		{
 			ft_putchar(*arg);
+			num_char++;
 			arg++;
 			cut_num--;
 		}
 	}
+	/*if (type == 'p')
+	{
+									arreglar esta mierda
+	}*/
 	while (num_spaces < 0)
 	{
 		ft_putchar(c);
+		num_char++;
 		num_spaces++;
 	}
+	return (num_char);
 }
 
 int		ft_printf(const char *head, ...)
@@ -336,16 +376,21 @@ int		ft_printf(const char *head, ...)
 	char	type;
 	int		num_a;
 	int		num_s;
+	int		var_spaces;
+	int		res;
 
 	text = ft_strdup(head);
+	res = 0;
 	num_a = 0;
 	num_s = 0;
+	var_spaces = 0;
 	va_start(args, head);
 	while (*text != '\0')
 	{
 		while (*text != '%' && *text != '\0')
 		{
 			ft_putchar(*text);
+			res++;
 			text++;
 		}
 		if (*text != '\0')
@@ -354,6 +399,8 @@ int		ft_printf(const char *head, ...)
 			num_a = num_ast(text);
 			if (num_a != 0)
 			{
+				var_spaces = va_arg(args, int);
+				num_a--;
 				while (num_a > 0)
 				{
 					num_s = va_arg(args, int);
@@ -361,44 +408,59 @@ int		ft_printf(const char *head, ...)
 				}
 			}
 			type = find_type(text);
-			if (type == 'd' || type == 'i' || type == 'u'
-			|| type == 'x' || type == 'X')
-				arg = allint(text, va_arg(args, int));
-			if (type == 'p')
-				arg = allpointer(text, va_arg(args, unsigned long));
-			if (type == 's')
-				arg = allchar(va_arg(args, char *));
-			if (type == 'c')
-				arg = justchar(va_arg(args, int));
-			if (type == '%')
-				arg = justchar('%');
-			if (find_this_flag(text, '*') == 1)
+			if (type)
 			{
-				if (find_this_flag(text, '.'))
+				if (type == 'd' || type == 'i' || type == 'u'
+				|| type == 'x' || type == 'X')
+					arg = allint(text, va_arg(args, int));
+				if (type == 'p')
+					arg = allpointer(text, va_arg(args, unsigned long));
+				if (type == 's')
+					arg = allchar(va_arg(args, char *));
+				if (type == 'c')
+					arg = justchar(va_arg(args, int));
+				if (type == '%')
+					arg = justchar('%');
+				if (find_this_flag(text, '*') == 1)
 				{
-					if (first_flag(text) == '.')
-						print_point(text, arg, num_s, num_spaces(text));
+					if (find_this_flag(text, '.'))
+					{
+						if (first_flag(text) == '.')
+							res += print_point(text, arg, var_spaces, num_spaces(text));
+						else
+						{
+						if (find_this_flag(text, '-'))
+							{
+								if (var_spaces > 0)
+									var_spaces = var_spaces * -1;
+							}
+							res += print_point(text, arg, num_s, var_spaces);
+						}
+					}
 					else
-						print_point(text, arg, num_cut(text), num_s + ft_strlen(arg));
+					{
+						if (find_this_flag(text, '-'))
+						{
+							if (var_spaces > 0)
+								var_spaces = var_spaces * -1;
+						}
+						res += print_arg(text, arg, real_spaces(var_spaces, ft_strlen(arg)));
+					}
 				}
 				else
 				{
-					print_arg(text, arg, real_spaces(num_s, ft_strlen(arg)));
+					if (find_this_flag(text, '.'))
+						res += print_point(text, arg, num_cut(text),
+						num_spaces(text));
+					else
+						res += print_arg(text, arg, real_spaces(num_spaces(text), ft_strlen(arg)));
 				}
 			}
-			else
-			{
-				if (find_this_flag(text, '.'))
-					print_point(text, arg, num_cut(text),
-					num_spaces(text));
-				else
-					print_arg(text, arg, real_spaces(num_spaces(text), ft_strlen(arg)));
-			}
+			while (*text != type && *text)
+				text++;
+			if (*text)
+				text++;
 		}
-		while (*text != type && *text)
-			text++;
-		if (*text)
-			text++;
 	}
-	return (0);
+	return (res);
 }
