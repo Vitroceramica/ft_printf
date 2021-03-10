@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 17:35:46 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/09 19:00:43 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/10 19:30:10 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,6 @@ int		main()
 	ft_printf("%5.i\n", 0);
 	printf("%5.i\n", 0);
 	*/
-	ft_printf("%.p\n", NULL);
-	printf("%.p\n", NULL);
+	ft_printf("%c\n", NULL);
+	printf("%c\n", NULL);
 }

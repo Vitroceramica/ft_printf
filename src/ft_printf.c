@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 13:30:44 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/09 19:21:21 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/10 19:35:28 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,9 +128,16 @@ char	find_type(char *text) //Devuelve el primer tipo encontrado saltando las fla
 char	*justchar(char c) //devuelve un string ("c\0")
 {
 	char	*str;
-
-	str = calloc(2, 1);
-	ft_strfiller(str, c);
+	if (c)
+	{
+		str = calloc(2, 1);
+		ft_strfiller(str, c);
+	}
+	else
+	{
+		str = calloc(2, 1);
+		ft_strfiller(str, '\x00');
+	}
 	return (str);
 }
 
@@ -178,15 +185,28 @@ char	*allpointer(char *text, unsigned long arg) //Hace una transformacion de uns
 {
 	char	*str;
 	char	*base;
+	int		cut;
 
 	str = NULL;
+	cut = num_cut(text);
 	if (find_type(text) == 'p')
 	{
+		base = "0123456789abcdef";
 		str = ft_calloc(check_hexsize(arg) + 3, 1);
 		ft_strfiller(str, '0');
 		ft_strfiller(str, 'x');
-		base = "0123456789abcdef";
-		basenum(arg, base, str);
+		if (find_this_flag(text, '.'))
+		{
+			if (arg == '\0')
+				cut++;
+			while (cut > check_hexsize(arg))
+			{
+				ft_strfiller(str, '0');
+				cut--;
+			}
+		}
+		if (arg || !find_this_flag(text, '.') || find_this_flag(text, '*'))
+			basenum(arg, base, str);
 	}
 	return (str);
 }
@@ -259,9 +279,13 @@ int		print_arg(char *text, char *arg, int spaces) //imprime el argumento con el 
 			num_char++;
 			num--;
 		}
+		if (find_type(text) == 'c' && *arg == '\0')
+		{
+			ft_putchar('\x00');
+			num_char++;
+		}
 		num_char += ft_strlen(arg);
 		ft_putstr(arg);
-
 	}
 	if (num < 0)
 	{
@@ -296,11 +320,11 @@ int		print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 		if (ft_atoi(arg) < 0)
 			cut_num--;
 	}
-	if (cut_num == 0)
-		nowrite = '\0';
-	if (type == 's' || type == 'p')
+	if (cut_num == 0 || type != 'c')
+		nowrite = 'T';
+	if (type == 's' || type == 'p' || type == 'c')
 	{
-		if ((unsigned int)cut_num < ft_strlen(arg))
+		if ((unsigned int)cut_num < ft_strlen(arg) && type == 's')
 			num_spaces = real_spaces(num_spaces, cut_num);
 		else
 			num_spaces = real_spaces(num_spaces, ft_strlen(arg));
@@ -318,7 +342,7 @@ int		print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	}
 	while (num_spaces > 0)
 	{
-		if (find_this_flag(text, '0') && nowrite != '\0')
+		if (find_this_flag(text, '0') && nowrite != 'T')
 			c = '0';
 		ft_putchar(c);
 		num_char++;
@@ -345,20 +369,26 @@ int		print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 		num_char += ft_strlen(arg);
 		ft_putstr(arg);
 	}
-	if (type == 's')
+	if (find_type(text) == 'c')
 	{
-		while (cut_num > 0 && *arg)
-		{
+		num_char++;
+		if (*arg == '\0')
+			ft_putchar('\x00');
+		else
 			ft_putchar(*arg);
-			num_char++;
-			arg++;
-			cut_num--;
-		}
 	}
-	/*if (type == 'p')
+	while (cut_num > 0 && *arg && type == 's')
 	{
-									arreglar esta mierda
-	}*/
+		ft_putchar(*arg);
+		num_char++;
+		arg++;
+		cut_num--;
+	}
+	if (type == 'p')
+		{
+			ft_putstr(arg);
+			num_char += ft_strlen(arg);
+		}
 	while (num_spaces < 0)
 	{
 		ft_putchar(c);
