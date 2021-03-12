@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 13:30:44 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/10 19:35:28 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/12 18:10:03 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,25 @@ char	first_flag(char *text)
 	return (0);
 }
 
+int		check_astpointast(char	*text)
+{
+	while (*text != '*' && *text)
+	{
+		if (*text == find_type(text))
+			break ;
+		text++;
+	}
+	if (*text)
+		text++;
+	if(*text == '.')
+	{
+		text++;
+		if (*text == '*')
+			return (1);
+	}
+	return (0);
+}
+
 int		real_spaces	(int num_spaces, int adjust)
 {
 	if (num_spaces >= 0)
@@ -247,7 +266,7 @@ int		num_ast(char *text)
 	return (amount);
 }
 
-int		print_arg(char *text, char *arg, int spaces) //imprime el argumento con el numero de espacios o 0s correspondiente
+int		print_nopoint(struct text_stats stats, int spaces) //reducir mucho
 {
 	char	c;
 	int		num;
@@ -257,21 +276,23 @@ int		print_arg(char *text, char *arg, int spaces) //imprime el argumento con el 
 	c = ' ';
 	num = spaces;
 	num_char = 0;
-	aux = text;
-	if (!arg)
+	aux = stats.text;
+	if (!stats.arg)
 	{
-		arg = "(null)\0";
+		stats.arg = "(null)\0";
 		num = real_spaces(num, 6);
 	}
-	if (ft_atoi(arg) < 0 && find_this_flag(text, '0'))
+	if (find_type(stats.text) == 'c' && *stats.arg == '\0')
+		num = real_spaces(num, 1);
+	if (ft_atoi(stats.arg) < 0 && find_this_flag(stats.text, '0'))
 	{
 		ft_putchar('-');
 		num_char++;
-		arg++;
+		stats.arg++;
 	}
 	if (num >= 0)
 	{
-		if (find_this_flag(text, '0'))
+		if (find_this_flag(stats.text, '0'))
 			c = '0';
 		while (num > 0)
 		{
@@ -279,18 +300,18 @@ int		print_arg(char *text, char *arg, int spaces) //imprime el argumento con el 
 			num_char++;
 			num--;
 		}
-		if (find_type(text) == 'c' && *arg == '\0')
+		num_char += ft_strlen(stats.arg);
+		ft_putstr(stats.arg);
+	}
+	if (find_type(stats.text) == 'c' && *stats.arg == '\0')
 		{
 			ft_putchar('\x00');
 			num_char++;
 		}
-		num_char += ft_strlen(arg);
-		ft_putstr(arg);
-	}
 	if (num < 0)
 	{
-		num_char += ft_strlen(arg);
-		ft_putstr(arg);
+		num_char += ft_strlen(stats.arg);
+		ft_putstr(stats.arg);
 		while (num < 0)
 		{
 			ft_putchar(c);
@@ -301,48 +322,63 @@ int		print_arg(char *text, char *arg, int spaces) //imprime el argumento con el 
 	return (num_char);
 }
 
-int		print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime el numero de carácteres y espacios seleccionados de arg
+int		point_spaces(struct text_stats stats, int cut_num, int num_spaces)  //reducir un poco
+{
+	char c;
+	char nowrite;
+	char	type;
+
+	c = ' ';
+	type = find_type(stats.text);
+	nowrite = 0;
+	if (cut_num == 0 || stats.type != 'c')
+		nowrite = 'T';
+	if (type == 's' || type == 'p' || type == 'c')
+	{
+		if ((unsigned int)cut_num < ft_strlen(stats.arg) && type == 's')
+			num_spaces = real_spaces(num_spaces, cut_num);
+		else
+			num_spaces = real_spaces(num_spaces, ft_strlen(stats.arg));
+	}
+	else if (cut_num != 0)
+	{
+		if ((unsigned int)cut_num < ft_strlen(stats.arg))
+			num_spaces = real_spaces(num_spaces, ft_strlen(stats.arg));
+		else
+		{
+			if (ft_atoi(stats.arg) < 0)
+				num_spaces = real_spaces(num_spaces, 1);
+			num_spaces = real_spaces(num_spaces, cut_num);
+		}
+	}
+	return (num_spaces);
+}
+
+int		print_point(struct text_stats stats, int cut_num, int num_spaces) //reducir mucho
 {
 	char	type;
 	char	nowrite;
 	int		num_char;
 	char	c;
 
-	type = find_type(text);
+	type = find_type(stats.text);
 	num_char = 0;
 	nowrite = 0;
 	c = ' ';
-	if (!arg)
-		arg = "(null)\0";
+	if (!stats.arg)
+		stats.arg = "(null)\0";
 	if (cut_num < 0)
 	{
-		cut_num = ft_strlen(arg);
-		if (ft_atoi(arg) < 0)
+		cut_num = ft_strlen(stats.arg);
+		if (ft_atoi(stats.arg) < 0)
 			cut_num--;
 	}
 	if (cut_num == 0 || type != 'c')
 		nowrite = 'T';
-	if (type == 's' || type == 'p' || type == 'c')
-	{
-		if ((unsigned int)cut_num < ft_strlen(arg) && type == 's')
-			num_spaces = real_spaces(num_spaces, cut_num);
-		else
-			num_spaces = real_spaces(num_spaces, ft_strlen(arg));
-	}
-	else if (cut_num != 0)
-	{
-		if ((unsigned int)cut_num < ft_strlen(arg))
-			num_spaces = real_spaces(num_spaces, ft_strlen(arg));
-		else
-		{
-			if (ft_atoi(arg) < 0)
-				num_spaces = real_spaces(num_spaces, 1);
-			num_spaces = real_spaces(num_spaces, cut_num);
-		}
-	}
+	num_spaces = point_spaces(stats, cut_num, num_spaces);
 	while (num_spaces > 0)
 	{
-		if (find_this_flag(text, '0') && nowrite != 'T')
+		if (find_this_flag(stats.text, '0') && nowrite != 'T')
 			c = '0';
 		ft_putchar(c);
 		num_char++;
@@ -351,43 +387,43 @@ int		print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	if (type == 'd' || type == 'i' || type == 'u'
 	|| type == 'x' || type == 'X')
 	{
-		if (*arg == '0')
-			arg = "\0";
-		if (ft_atoi(arg) < 0)
+		if (*stats.arg == '0')
+			stats.arg = "\0";
+		if (ft_atoi(stats.arg) < 0)
 		{
 			ft_putchar('-');
 			num_char++;
-			arg++;
+			stats.arg++;
 		}
-		cut_num = cut_num - ft_strlen(arg);
+		cut_num = cut_num - ft_strlen(stats.arg);
 		while (cut_num > 0)
 		{
 			ft_putchar('0');
 			num_char++;
 			cut_num--;
 		}
-		num_char += ft_strlen(arg);
-		ft_putstr(arg);
+		num_char += ft_strlen(stats.arg);
+		ft_putstr(stats.arg);
 	}
-	if (find_type(text) == 'c')
+	if (find_type(stats.text) == 'c')
 	{
 		num_char++;
-		if (*arg == '\0')
+		if (*stats.arg == '\0')
 			ft_putchar('\x00');
 		else
-			ft_putchar(*arg);
+			ft_putchar(*stats.arg);
 	}
-	while (cut_num > 0 && *arg && type == 's')
+	while (cut_num > 0 && *stats.arg && type == 's')
 	{
-		ft_putchar(*arg);
+		ft_putchar(*stats.arg);
 		num_char++;
-		arg++;
+		stats.arg++;
 		cut_num--;
 	}
 	if (type == 'p')
 		{
-			ft_putstr(arg);
-			num_char += ft_strlen(arg);
+			ft_putstr(stats.arg);
+			num_char += ft_strlen(stats.arg);
 		}
 	while (num_spaces < 0)
 	{
@@ -398,99 +434,133 @@ int		print_point(char *text, char *arg, int cut_num, int num_spaces) // Imprime 
 	return (num_char);
 }
 
-int		ft_printf(const char *head, ...)
+char	*check_type (char type, char *text, va_list args)
 {
-	va_list args;
-	char	*text;
 	char	*arg;
-	char	type;
-	int		num_a;
-	int		num_s;
-	int		var_spaces;
-	int		res;
 
-	text = ft_strdup(head);
-	res = 0;
-	num_a = 0;
-	num_s = 0;
-	var_spaces = 0;
-	va_start(args, head);
-	while (*text != '\0')
-	{
-		while (*text != '%' && *text != '\0')
+	arg = NULL;
+	if (type == 'd' || type == 'i' || type == 'u'
+	|| type == 'x' || type == 'X')
+		arg = allint(text, va_arg(args, int));
+	if (type == 'p')
+		arg = allpointer(text, va_arg(args, unsigned long));
+	if (type == 's')
+		arg = allchar(va_arg(args, char *));
+	if (type == 'c')
+		arg = justchar(va_arg(args, int));
+	if (type == '%')
+		arg = justchar('%');
+	return (arg);
+}
+
+int		check_varspaces (char *text, int var_spaces)
+{
+	if (find_this_flag(text, '-'))
 		{
-			ft_putchar(*text);
-			res++;
-			text++;
+			if (var_spaces > 0)
+			var_spaces = var_spaces * -1;
 		}
-		if (*text != '\0')
+	return (var_spaces);
+}
+
+int		print_ast(struct text_stats stats)
+{
+	if (find_this_flag(stats.text, '.'))
+	{
+		if (first_flag(stats.text) == '.')
+			stats.res += print_point(stats, stats.var_spaces, num_spaces(stats.text));
+		else
 		{
-			text++;
-			num_a = num_ast(text);
-			if (num_a != 0)
-			{
-				var_spaces = va_arg(args, int);
-				num_a--;
-				while (num_a > 0)
-				{
-					num_s = va_arg(args, int);
-					num_a--;
-				}
-			}
-			type = find_type(text);
-			if (type)
-			{
-				if (type == 'd' || type == 'i' || type == 'u'
-				|| type == 'x' || type == 'X')
-					arg = allint(text, va_arg(args, int));
-				if (type == 'p')
-					arg = allpointer(text, va_arg(args, unsigned long));
-				if (type == 's')
-					arg = allchar(va_arg(args, char *));
-				if (type == 'c')
-					arg = justchar(va_arg(args, int));
-				if (type == '%')
-					arg = justchar('%');
-				if (find_this_flag(text, '*') == 1)
-				{
-					if (find_this_flag(text, '.'))
-					{
-						if (first_flag(text) == '.')
-							res += print_point(text, arg, var_spaces, num_spaces(text));
-						else
-						{
-						if (find_this_flag(text, '-'))
-							{
-								if (var_spaces > 0)
-									var_spaces = var_spaces * -1;
-							}
-							res += print_point(text, arg, num_s, var_spaces);
-						}
-					}
-					else
-					{
-						if (find_this_flag(text, '-'))
-						{
-							if (var_spaces > 0)
-								var_spaces = var_spaces * -1;
-						}
-						res += print_arg(text, arg, real_spaces(var_spaces, ft_strlen(arg)));
-					}
-				}
-				else
-				{
-					if (find_this_flag(text, '.'))
-						res += print_point(text, arg, num_cut(text),
-						num_spaces(text));
-					else
-						res += print_arg(text, arg, real_spaces(num_spaces(text), ft_strlen(arg)));
-				}
-			}
-			while (*text != type && *text)
-				text++;
-			if (*text)
-				text++;
+			stats.var_spaces = check_varspaces(stats.text, stats.var_spaces);
+			if (check_astpointast(stats.text) == 1)
+				stats.res += print_point(stats, stats.num_s, stats.var_spaces);
+			else
+				stats.res += print_point(stats, num_cut(stats.text), stats.var_spaces);
 		}
 	}
-	return (res);
+	else
+	{
+		stats.var_spaces = check_varspaces(stats.text, stats.var_spaces);
+		stats.res += print_nopoint(stats, real_spaces(stats.var_spaces, ft_strlen(stats.arg)));
+	}
+	return (stats.res);
+}
+
+int		print_noast(struct text_stats stats)
+{
+	if (find_this_flag(stats.text, '.'))
+		stats.res += print_point(stats, num_cut(stats.text),
+		num_spaces(stats.text));
+	else
+		stats.res += print_nopoint(stats, real_spaces(num_spaces(stats.text),
+		ft_strlen(stats.arg)));
+	return (stats.res);
+}
+
+int		check_num_s(va_list args, char *text)
+{
+	int		num_a;
+	int		num_s;
+
+	num_a = num_ast(text);
+	num_s = 0;
+	while (num_a > 1)
+	{
+		num_s = va_arg(args, int);
+		num_a--;
+	}
+	return (num_s);
+}
+
+int		print_star_arg(struct text_stats stats)
+{
+	if (find_this_flag(stats.text, '*') == 1)
+		stats.res = print_ast(stats);
+	else
+		stats.res = print_noast(stats);
+	return (stats.res);
+}
+
+int		print_all(struct text_stats stats, va_list args)
+{
+	while (*stats.text != '\0')
+	{
+		while (*stats.text != '%' && *stats.text != '\0')
+		{
+			ft_putchar(*stats.text);
+			stats.res++;
+			stats.text++;
+		}
+		while (*stats.text != '%' && *stats.text != '\0')
+			stats.text++;
+		if (*stats.text != '\0')
+		{
+			stats.text++;
+			if (num_ast(stats.text) != 0)
+				stats.var_spaces = va_arg(args, int);
+			stats.num_s = check_num_s(args, stats.text);
+			stats.type = find_type(stats.text);
+			stats.arg = check_type(stats.type, stats.text, args);
+			stats.res = print_star_arg(stats);
+			while (*stats.text != stats.type && *stats.text)
+				stats.text++;
+			(*stats.text) ? stats.text++ : NULL ;
+		}
+	}
+	return (stats.res);
+}
+
+int		ft_printf(const char *head, ...)
+{
+	va_list 			args;
+	struct				text_stats	stats;
+
+	stats.text = ft_strdup(head);
+	stats.res = 0;
+	va_start(args, head);
+	stats.res = print_all(stats, args);
+	va_end(args);
+	free_all(stats.text);
+	free_all(stats.arg);
+	return (stats.res);
 }

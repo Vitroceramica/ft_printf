@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 17:56:20 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/02 13:19:09 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/12 17:07:21 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@ unsigned int	ft_strlen(const char *str)
 	while (str[i] != '\0')
 		i++;
 	return (i);
+}
+
+void	free_all(char *to_free)
+{
+	to_free = NULL;
+	free(to_free);
 }
 
 void			*ft_calloc(size_t nitems, size_t size)

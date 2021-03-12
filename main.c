@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 17:35:46 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/10 19:30:10 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/12 16:59:56 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,12 @@ int		main()
 	printf("%07i\n", -54);
 	ft_printf("%5.i\n", 0);
 	printf("%5.i\n", 0);
+	ft_printf("%5c\n", NULL);
+	printf("%5c\n", NULL);
+	ft_printf("%%-*.3s LYDI == |%-*.3s|\n", 5, "LYDI");
+	printf("%%-*.3s LYDI == |%-*.3s|", 5, "LYDI");
+}
 	*/
-	ft_printf("%c\n", NULL);
-	printf("%c\n", NULL);
+	ft_printf("comemeel%.*i\n", 2, 42);
+	//printf("comemeel%.*i\n", 2, 42);
 }
