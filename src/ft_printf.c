@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 13:30:44 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/12 18:10:03 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/15 18:05:28 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ int		real_spaces	(int num_spaces, int adjust)
 	return (num_spaces);
 }
 
-char	*allpointer(char *text, unsigned long arg) //Hace una transformacion de unsigned long a hexadecimal y lo mete en un string
+char	*allpointer(char *text, unsigned long arg) //acortar un pocoo
 {
 	char	*str;
 	char	*base;
@@ -230,7 +230,7 @@ char	*allpointer(char *text, unsigned long arg) //Hace una transformacion de uns
 	return (str);
 }
 
-char	*allint(char *text, int arg) //encuentra 'd','i','u','x' y 'X' en text y devuelve un string ("arg\0")
+char	*allint(char *text, int arg)
 {
 	char *str;
 
@@ -266,73 +266,80 @@ int		num_ast(char *text)
 	return (amount);
 }
 
+int		print_spaces(struct text_stats stats, int num_spaces, int cut_num)
+{
+	char	nowrite;
+	int		num_char;
+	char	c;
+	
+	nowrite = 'F';
+	c = ' ';
+	num_char = 0;
+	if ((cut_num == 0 || stats.type != 'c')
+	&& find_this_flag(stats.text, '.'))
+		nowrite = 'T';
+	while (num_spaces > 0)
+	{
+		if (find_this_flag(stats.text, '0') && nowrite != 'T')
+			c = '0';
+		ft_putchar(c);
+		num_char++;
+		num_spaces--;
+	}
+	while (num_spaces < 0)
+	{
+		ft_putchar(c);
+		num_char++;
+		num_spaces++;
+	}
+	return (num_char);
+}
+
+int		print_nopoint_arg(struct text_stats stats, int num_char)
+{
+	num_char += ft_strlen(stats.arg);
+	ft_putstr(stats.arg);
+	if (find_type(stats.text) == 'c' && *stats.arg == '\0')
+		{
+			ft_putchar('\x00');
+			num_char++;
+		}
+	return (num_char);
+}
+
 int		print_nopoint(struct text_stats stats, int spaces) //reducir mucho
 {
 	char	c;
-	int		num;
 	int		num_char;
-	char	*aux;
 
 	c = ' ';
-	num = spaces;
 	num_char = 0;
-	aux = stats.text;
 	if (!stats.arg)
 	{
 		stats.arg = "(null)\0";
-		num = real_spaces(num, 6);
+		spaces = real_spaces(spaces, 6);
 	}
 	if (find_type(stats.text) == 'c' && *stats.arg == '\0')
-		num = real_spaces(num, 1);
+		spaces = real_spaces(spaces, 1);
 	if (ft_atoi(stats.arg) < 0 && find_this_flag(stats.text, '0'))
 	{
 		ft_putchar('-');
 		num_char++;
 		stats.arg++;
 	}
-	if (num >= 0)
-	{
-		if (find_this_flag(stats.text, '0'))
-			c = '0';
-		while (num > 0)
-		{
-			ft_putchar(c);
-			num_char++;
-			num--;
-		}
-		num_char += ft_strlen(stats.arg);
-		ft_putstr(stats.arg);
-	}
-	if (find_type(stats.text) == 'c' && *stats.arg == '\0')
-		{
-			ft_putchar('\x00');
-			num_char++;
-		}
-	if (num < 0)
-	{
-		num_char += ft_strlen(stats.arg);
-		ft_putstr(stats.arg);
-		while (num < 0)
-		{
-			ft_putchar(c);
-			num_char++;
-			num++;
-		}
-	}
+	if (spaces > 0)
+		num_char += print_spaces(stats, spaces, 0);
+	num_char = print_nopoint_arg(stats, num_char);
+	if (spaces < 0)
+		num_char += print_spaces(stats, spaces, 0);
 	return (num_char);
 }
 
 int		point_spaces(struct text_stats stats, int cut_num, int num_spaces)  //reducir un poco
 {
-	char c;
-	char nowrite;
 	char	type;
 
-	c = ' ';
 	type = find_type(stats.text);
-	nowrite = 0;
-	if (cut_num == 0 || stats.type != 'c')
-		nowrite = 'T';
 	if (type == 's' || type == 'p' || type == 'c')
 	{
 		if ((unsigned int)cut_num < ft_strlen(stats.arg) && type == 's')
@@ -354,57 +361,33 @@ int		point_spaces(struct text_stats stats, int cut_num, int num_spaces)  //reduc
 	return (num_spaces);
 }
 
-int		print_point(struct text_stats stats, int cut_num, int num_spaces) //reducir mucho
+int		print_diuxX(char *arg, int num_char, int cut_num)
 {
-	char	type;
-	char	nowrite;
-	int		num_char;
-	char	c;
-
-	type = find_type(stats.text);
-	num_char = 0;
-	nowrite = 0;
-	c = ' ';
-	if (!stats.arg)
-		stats.arg = "(null)\0";
-	if (cut_num < 0)
-	{
-		cut_num = ft_strlen(stats.arg);
-		if (ft_atoi(stats.arg) < 0)
-			cut_num--;
-	}
-	if (cut_num == 0 || type != 'c')
-		nowrite = 'T';
-	num_spaces = point_spaces(stats, cut_num, num_spaces);
-	while (num_spaces > 0)
-	{
-		if (find_this_flag(stats.text, '0') && nowrite != 'T')
-			c = '0';
-		ft_putchar(c);
-		num_char++;
-		num_spaces--;
-	}
-	if (type == 'd' || type == 'i' || type == 'u'
-	|| type == 'x' || type == 'X')
-	{
-		if (*stats.arg == '0')
-			stats.arg = "\0";
-		if (ft_atoi(stats.arg) < 0)
+	if (*arg == '0')
+			arg = "\0";
+		if (ft_atoi(arg) < 0)
 		{
 			ft_putchar('-');
 			num_char++;
-			stats.arg++;
+			arg++;
 		}
-		cut_num = cut_num - ft_strlen(stats.arg);
-		while (cut_num > 0)
-		{
-			ft_putchar('0');
-			num_char++;
-			cut_num--;
-		}
-		num_char += ft_strlen(stats.arg);
-		ft_putstr(stats.arg);
+	cut_num = cut_num - ft_strlen(arg);
+	while (cut_num > 0)
+	{
+		ft_putchar('0');
+		num_char++;
+		cut_num--;
 	}
+	num_char += ft_strlen(arg);
+	ft_putstr(arg);
+	return (num_char);
+}
+
+int		print_point_arg (struct text_stats stats, int num_char, int cut_num)
+{
+	if (stats.type == 'd' || stats.type == 'i' || stats.type == 'u'
+	|| stats.type == 'x' || stats.type == 'X')
+		num_char = print_diuxX(stats.arg, num_char, cut_num);
 	if (find_type(stats.text) == 'c')
 	{
 		num_char++;
@@ -413,24 +396,41 @@ int		print_point(struct text_stats stats, int cut_num, int num_spaces) //reducir
 		else
 			ft_putchar(*stats.arg);
 	}
-	while (cut_num > 0 && *stats.arg && type == 's')
+	while (cut_num > 0 && *stats.arg && stats.type == 's')
 	{
 		ft_putchar(*stats.arg);
 		num_char++;
 		stats.arg++;
 		cut_num--;
 	}
-	if (type == 'p')
-		{
-			ft_putstr(stats.arg);
-			num_char += ft_strlen(stats.arg);
-		}
-	while (num_spaces < 0)
+	if (stats.type == 'p')
 	{
-		ft_putchar(c);
-		num_char++;
-		num_spaces++;
+		ft_putstr(stats.arg);
+		num_char += ft_strlen(stats.arg);
 	}
+	return (num_char);
+}
+
+int		print_point(struct text_stats stats, int cut_num, int num_spaces)
+{
+	int		num_char;
+
+	stats.type = find_type(stats.text);
+	num_char = 0;
+	if (!stats.arg)
+		stats.arg = "(null)\0";
+	if (cut_num < 0)
+	{
+		cut_num = ft_strlen(stats.arg);
+		if (ft_atoi(stats.arg) < 0)
+			cut_num--;
+	}
+	num_spaces = point_spaces(stats, cut_num, num_spaces);
+	if (num_spaces > 0)
+		num_char += print_spaces(stats, num_spaces, cut_num);
+	num_char = print_point_arg (stats, num_char, cut_num);
+	if (num_spaces < 0)
+		num_char += print_spaces(stats, num_spaces, cut_num);
 	return (num_char);
 }
 
@@ -521,7 +521,7 @@ int		print_star_arg(struct text_stats stats)
 	return (stats.res);
 }
 
-int		print_all(struct text_stats stats, va_list args)
+int		print_all(struct text_stats stats, va_list args) //acortar un pocoo
 {
 	while (*stats.text != '\0')
 	{
@@ -544,7 +544,8 @@ int		print_all(struct text_stats stats, va_list args)
 			stats.res = print_star_arg(stats);
 			while (*stats.text != stats.type && *stats.text)
 				stats.text++;
-			(*stats.text) ? stats.text++ : NULL ;
+			if (*stats.text)
+				stats.text++;
 		}
 	}
 	return (stats.res);

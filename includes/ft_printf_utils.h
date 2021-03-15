@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 18:00:54 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/12 17:07:43 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/15 17:56:12 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void				ft_putchar(char c);
 void				ft_putstr(char *s);
 char				*ft_itoa(int n);
 char				*ft_unsigned_itoa(unsigned int n);
-char				ft_toupper(char c);
 char				*ft_tohex(unsigned long nbr);
 void				free_all(char *to_free);
 
