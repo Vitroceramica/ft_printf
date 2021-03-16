@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 17:56:20 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/15 18:00:03 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/16 14:16:36 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 unsigned int	ft_strlen(const char *str)
 {
-	unsigned int i;
+	unsigned int	i;
 
 	i = 0;
 	if (!str)
@@ -25,14 +25,14 @@ unsigned int	ft_strlen(const char *str)
 	return (i);
 }
 
-void			ft_putchar(char c)
+void	ft_putchar(char c)
 {
 	write(1, &c, 1);
 }
 
-void			ft_putstr(char *s)
+void	ft_putstr(char *s)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!s)
@@ -44,9 +44,9 @@ void			ft_putstr(char *s)
 	}
 }
 
-void			ft_strfiller(char *str, char c)
+void	ft_strfiller(char *str, char c)
 {
-	int i;
+	int	i;
 
 	i = ft_strlen(str);
 	str[i] = c;

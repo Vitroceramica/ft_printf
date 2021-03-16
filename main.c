@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 17:35:46 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/12 16:59:56 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/16 14:28:31 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,5 @@ int		main()
 	*/
 	ft_printf("comemeel%.*i\n", 2, 42);
 	//printf("comemeel%.*i\n", 2, 42);
+	system("leaks a.out -fullContent");
 }

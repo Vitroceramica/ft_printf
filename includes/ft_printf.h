@@ -6,19 +6,19 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 12:15:53 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/15 17:47:26 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/16 13:54:13 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#ifndef FT_PRINTF_H
 
-#ifndef PRINTF_H
+# define FT_PRINTF_H
 
-# define PRINTF_H
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdarg.h>
 
-struct	text_stats
+struct	s_text_stats
 {
 	char	*text;
 	char	*arg;
@@ -28,17 +28,26 @@ struct	text_stats
 	int		res;
 };
 
-int		ft_printf(const char *head, ...);
-int		print_nopoint(struct text_stats stats, int spaces);
-int		print_point(struct text_stats stats, int cut_num, int num_spaces);
-char	*por(char *text);
+void	*find_por(char *text);
+char	find_flag(char *text);
+int		find_this_flag(char *text, char flag);
+char	find_type(char *text);
+char	first_flag(char *text);
 char	*justchar(char c);
+char	*allpointer(char *text, unsigned long arg);
 char	*allchar(char *arg);
 char	*allint(char *text, int arg);
-char	find_flag(char *text);
-void	*find_por(char *text);
 int		num_spaces(char *text);
-char	find_type(char *text);
-
+int		check_varspaces (char *text, int var_spaces);
+int		real_spaces(int num_spaces, int adjust);
+int		print_spaces(struct s_text_stats stats, int num_spaces, int cut_num);
+int		num_cut(char *text);
+int		num_ast(char *text);
+int		check_num_s(va_list args, char *text);
+int		print_star_arg(struct s_text_stats stats);
+int		print_noast(struct s_text_stats stats);
+int		print_nopoint(struct s_text_stats stats, int spaces);
+int		print_point(struct s_text_stats stats, int cut_num, int num_spaces);
+int		ft_printf(const char *head, ...);
 
 #endif

@@ -6,23 +6,23 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/15 17:36:20 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/15 18:00:01 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/16 13:36:43 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_printf.h"
 #include "../includes/ft_printf_utils.h"
 
-char			ft_toupper(char c)
+char	ft_toupper(char c)
 {
 	if (c <= 122 && c >= 97)
 		c = c - 32;
 	return (c);
 }
 
-void			ft_strmayus(char *str)
+void	ft_strmayus(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] != '\0')
@@ -32,7 +32,7 @@ void			ft_strmayus(char *str)
 	}
 }
 
-void			basenum(unsigned long num, char *base, char *str)
+void	basenum(unsigned long num, char *base, char *str)
 {
 	if (num >= ft_strlen(base))
 	{
@@ -43,7 +43,7 @@ void			basenum(unsigned long num, char *base, char *str)
 		ft_strfiller(str, base[num]);
 }
 
-int				check_hexsize(unsigned long nbr)
+int	check_hexsize(unsigned long nbr)
 {
 	int					size;
 	unsigned long		num;
@@ -58,7 +58,7 @@ int				check_hexsize(unsigned long nbr)
 	return (size + 1);
 }
 
-char			*ft_tohex(unsigned long nbr)
+char	*ft_tohex(unsigned long nbr)
 {
 	char		*base;
 	char		*str;
