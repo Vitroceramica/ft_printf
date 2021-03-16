@@ -3,5 +3,6 @@
 .vscode
 **/debug*.*
 main.cpft/
+*.o
 pft/
 pft_2019/
