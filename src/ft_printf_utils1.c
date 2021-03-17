@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 17:56:20 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/16 14:16:36 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/17 12:42:14 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,6 @@ void	ft_strfiller(char *str, char c)
 
 void	free_all(char *to_free)
 {
-	to_free = NULL;
 	free(to_free);
+	to_free = NULL;
 }

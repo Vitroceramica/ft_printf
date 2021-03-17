@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/15 17:42:47 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/16 13:38:35 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/17 13:14:45 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,5 @@ char	*ft_unsigned_itoa(unsigned int n)
 	if (str == NULL)
 		return (NULL);
 	ft_putun(str, n);
-	ft_strfiller(str, '\0');
 	return (str);
 }

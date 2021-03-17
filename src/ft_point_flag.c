@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 12:00:11 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/16 13:42:14 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/17 14:24:39 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ int	point_spaces(struct s_text_stats stats, int cut_num, int num_spaces)
 			num_spaces = real_spaces(num_spaces, cut_num);
 		}
 	}
+	else if (cut_num == 0 && *stats.arg != '0')
+		num_spaces = real_spaces(num_spaces, ft_strlen(stats.arg));
 	return (num_spaces);
 }
 
