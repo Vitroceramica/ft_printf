@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 12:15:53 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/16 13:54:13 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/18 20:20:24 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,7 @@ int		print_noast(struct s_text_stats stats);
 int		print_nopoint(struct s_text_stats stats, int spaces);
 int		print_point(struct s_text_stats stats, int cut_num, int num_spaces);
 int		ft_printf(const char *head, ...);
+int		print_diuxX(struct s_text_stats stats, int num_char, int cut_num);
+int		astpoint_flag(struct s_text_stats stats);
 
 #endif

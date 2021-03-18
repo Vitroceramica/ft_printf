@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 12:04:45 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/16 13:41:52 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/18 20:24:26 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	print_ast(struct s_text_stats stats)
 		{
 			stats.var_spaces = check_varspaces(stats.text, stats.var_spaces);
 			if (check_astpointast(stats.text) == 1)
-				stats.res += print_point(stats, stats.num_s, stats.var_spaces);
+					stats.res = astpoint_flag(stats);
 			else
 				stats.res += print_point(stats, num_cut(stats.text),
 						stats.var_spaces);

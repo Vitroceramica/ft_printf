@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 12:11:03 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/16 13:41:50 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/18 20:40:50 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,9 @@ int	print_spaces(struct s_text_stats stats, int num_spaces, int cut_num)
 	if ((cut_num == 0 || stats.type != 'c')
 		&& find_this_flag(stats.text, '.'))
 		nowrite = 'T';
+	if (find_this_flag(stats.text, '0') && stats.num_s < 0 &&
+		(stats.type != 's' || stats.type != 'p'))
+		nowrite = 'F';
 	while (num_spaces > 0)
 	{
 		if (find_this_flag(stats.text, '0') && nowrite != 'T')
@@ -94,4 +97,23 @@ int	print_spaces(struct s_text_stats stats, int num_spaces, int cut_num)
 		num_spaces++;
 	}
 	return (num_char);
+}
+
+int	astpoint_flag(struct s_text_stats stats)
+{
+	if (find_this_flag(stats.text, '0') && stats.num_s < 0 &&
+	(stats.type != 's' && stats.type != 'p'))
+	{
+		if (ft_atoi(stats.arg) < 0 && stats.type != 'u')
+		{
+			ft_putchar('-');
+			stats.arg++;
+			stats.res++;
+			stats.var_spaces = real_spaces(stats.var_spaces, 1);
+		}
+		stats.res += print_point(stats, stats.num_s, stats.var_spaces);
+	}
+	else
+		stats.res += print_point(stats, stats.num_s, stats.var_spaces);
+	return (stats.res);
 }

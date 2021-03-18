@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 12:00:11 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/17 14:24:39 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/18 20:23:50 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,25 +31,26 @@ int	num_cut(char *text)
 	return (num);
 }
 
-int	print_diuxX(char *arg, int num_char, int cut_num)
+int	print_diuxX(struct s_text_stats stats, int num_char, int cut_num)
 {
-	if (*arg == '0')
-		arg = "\0";
-	if (ft_atoi(arg) < 0)
+	if (*stats.arg == '0')
+		stats.arg = "\0";
+	if (ft_atoi(stats.arg) < 0 && stats.type != 'u' &&
+	(unsigned int)ft_atoi(stats.arg) != 2147483648)
 	{
 		ft_putchar('-');
 		num_char++;
-		arg++;
+		stats.arg++;
 	}
-	cut_num = cut_num - ft_strlen(arg);
+	cut_num = cut_num - ft_strlen(stats.arg);
 	while (cut_num > 0)
 	{
 		ft_putchar('0');
 		num_char++;
 		cut_num--;
 	}
-	num_char += ft_strlen(arg);
-	ft_putstr(arg);
+	num_char += ft_strlen(stats.arg);
+	ft_putstr(stats.arg);
 	return (num_char);
 }
 
@@ -57,7 +58,7 @@ int	print_point_arg (struct s_text_stats stats, int num_char, int cut_num)
 {
 	if (stats.type == 'd' || stats.type == 'i' || stats.type == 'u'
 		|| stats.type == 'x' || stats.type == 'X')
-		num_char = print_diuxX(stats.arg, num_char, cut_num);
+		num_char = print_diuxX(stats, num_char, cut_num);
 	if (find_type(stats.text) == 'c')
 	{
 		num_char++;
@@ -117,7 +118,8 @@ int	print_point(struct s_text_stats stats, int cut_num, int num_spaces)
 	if (cut_num < 0)
 	{
 		cut_num = ft_strlen(stats.arg);
-		if (ft_atoi(stats.arg) < 0)
+		if (ft_atoi(stats.arg) < 0 &&
+			(stats.type == 'i' || stats.type == 'd'))
 			cut_num--;
 	}
 	num_spaces = point_spaces(stats, cut_num, num_spaces);

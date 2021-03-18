@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 17:35:46 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/17 14:28:53 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/18 20:35:00 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int		main()
 	ft_printf("%%-*.3s LYDI == |%-*.3s|\n", 5, "LYDI");
 	ft_printf("comemeel%.*i\n", 2, 42);*/
 
-	//ft_printf("%-*.*s\n", "0");
-	printf("%-*.*s\n", "0");
-	system("leaks a.out -fullContent");
+	ft_printf("%0*.*x\n",2, -1, 8);
+	printf("%0*.*x\n",2, -1, 8);
+	//system("leaks a.out -fullContent");
 }
