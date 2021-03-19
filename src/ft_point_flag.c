@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 12:00:11 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/18 20:23:50 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/19 16:23:42 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ int	print_diuxX(struct s_text_stats stats, int num_char, int cut_num)
 {
 	if (*stats.arg == '0')
 		stats.arg = "\0";
-	if (ft_atoi(stats.arg) < 0 && stats.type != 'u' &&
-	(unsigned int)ft_atoi(stats.arg) != 2147483648)
+	if (ft_atoi(stats.arg) < 0 && stats.type != 'u'
+		&& (unsigned int)ft_atoi(stats.arg) != 2147483648)
 	{
 		ft_putchar('-');
 		num_char++;
@@ -97,7 +97,7 @@ int	point_spaces(struct s_text_stats stats, int cut_num, int num_spaces)
 			num_spaces = real_spaces(num_spaces, ft_strlen(stats.arg));
 		else
 		{
-			if (ft_atoi(stats.arg) < 0)
+			if (ft_atoi(stats.arg) < 0 && stats.type != 'u')
 				num_spaces = real_spaces(num_spaces, 1);
 			num_spaces = real_spaces(num_spaces, cut_num);
 		}
@@ -118,8 +118,8 @@ int	print_point(struct s_text_stats stats, int cut_num, int num_spaces)
 	if (cut_num < 0)
 	{
 		cut_num = ft_strlen(stats.arg);
-		if (ft_atoi(stats.arg) < 0 &&
-			(stats.type == 'i' || stats.type == 'd'))
+		if (ft_atoi(stats.arg) < 0 && (stats.type == 'i'
+					|| stats.type == 'd'))
 			cut_num--;
 	}
 	num_spaces = point_spaces(stats, cut_num, num_spaces);

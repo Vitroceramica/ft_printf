@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 12:25:24 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/18 20:13:29 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/19 16:20:51 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ int	print_nopoint(struct s_text_stats stats, int spaces)
 	}
 	if (find_type(stats.text) == 'c' && *stats.arg == '\0')
 		spaces = real_spaces(spaces, 1);
-	if (ft_atoi(stats.arg) < 0 &&
-	find_this_flag(stats.text, '0') && stats.type != 'u')
+	if (ft_atoi(stats.arg) < 0 && find_this_flag(stats.text, '0')
+		&& stats.type != 'u')
 	{
 		ft_putchar('-');
 		num_char++;

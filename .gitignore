@@ -2,8 +2,9 @@
 **/*.out
 .vscode
 **/debug*.*
-main.cpft/
-*.o
+main.c/
+pft/
+*.o/
 pft/
 pft_2019/
 ft_printf_test_2020/

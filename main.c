@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 17:35:46 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/18 20:35:00 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/19 16:30:59 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int		main()
 {
 	char 	*a = "cipote";
 	//TODO ESTO FUNCIONA (ESPACIOS CON TODOS LOS TIPOS Y FLAGS DE LOS ESPACIOS - Y 0)
-	/*ft_printf("comemeel%012icomemierda\n", 23);
+	ft_printf("comemeel%012icomemierda\n", 23);
 	ft_printf("comemeel%012scomemierda\n", a);
 	ft_printf("comemeel%012pcomemierda\n", &a);
 	ft_printf("comemeel%012dcomemierda\n", 23);
@@ -37,9 +37,8 @@ int		main()
 	ft_printf("%5.i\n", 0);
 	ft_printf("%5c\n", NULL);
 	ft_printf("%%-*.3s LYDI == |%-*.3s|\n", 5, "LYDI");
-	ft_printf("comemeel%.*i\n", 2, 42);*/
 
-	ft_printf("%0*.*x\n",2, -1, 8);
-	printf("%0*.*x\n",2, -1, 8);
-	//system("leaks a.out -fullContent");
+	ft_printf("this %d nu%mber\n", 0);
+	printf("this %d nu%mber\n", 0);
+	system("leaks a.out -fullContent");
 }

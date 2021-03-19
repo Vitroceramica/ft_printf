@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 13:30:44 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/17 13:20:09 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/19 16:29:01 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,9 @@ int	print_all(struct s_text_stats stats, va_list args)
 		while (*stats.text != '%' && *stats.text != '\0')
 			stats.text++;
 		if (*stats.text != '\0')
-		{
 			stats.text++;
+		if (*stats.text != '\0' && find_type(stats.text))
+		{
 			if (num_ast(stats.text) != 0)
 				stats.var_spaces = va_arg(args, int);
 			stats.num_s = check_num_s(args, stats.text);
@@ -65,7 +66,7 @@ int	print_all(struct s_text_stats stats, va_list args)
 			if (*stats.text)
 				stats.text++;
 			if (stats.arg)
-				free(stats.arg);
+				free_all(stats.arg);
 		}
 	}
 	return (stats.res);
@@ -75,14 +76,14 @@ int	ft_printf(const char *head, ...)
 {
 	va_list				args;
 	struct s_text_stats	stats;
-	
+
 	if (head)
 		stats.text = ft_strdup(head);
 	stats.res = 0;
 	va_start(args, head);
 	stats.res = print_all(stats, args);
 	if (stats.text)
-		free(stats.text);
+		free_all(stats.text);
 	va_end(args);
 	return (stats.res);
 }

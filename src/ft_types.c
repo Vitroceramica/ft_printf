@@ -6,7 +6,7 @@
 /*   By: antonmar <antonmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 11:55:46 by antonmar          #+#    #+#             */
-/*   Updated: 2021/03/17 13:38:29 by antonmar         ###   ########.fr       */
+/*   Updated: 2021/03/19 16:34:04 by antonmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	*allpointer(char *text, unsigned long arg)
 char	*allint(char *text, int arg)
 {
 	char	*str;
-	
+
 	if (find_type(text) == 'd' || find_type(text) == 'i')
 		str = ft_itoa(arg);
 	if (find_type(text) == 'u')
